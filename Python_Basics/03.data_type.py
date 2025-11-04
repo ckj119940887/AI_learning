@@ -20,3 +20,16 @@ print(isinstance(b, int))
 num1 = 300
 num2 = 300
 print(id(num1) == id(num2))
+
+# 浮点数
+f1 = 0.10009
+f2 = 0.2
+f3 = f1 + f2
+print(type(f3))
+print(f3)
+
+# 处理精度问题
+from decimal import Decimal
+t1 = Decimal(0.1)
+t2 = Decimal(0.2)
+print(t1 + t2)
