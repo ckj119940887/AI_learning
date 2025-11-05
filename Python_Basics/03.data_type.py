@@ -33,3 +33,21 @@ from decimal import Decimal
 t1 = Decimal(0.1)
 t2 = Decimal(0.2)
 print(t1 + t2)
+
+# bool
+num1 = True
+print(num1 == 1)
+# 'is' is used to check whether the address is same
+print(num1 is True)
+
+# string
+# ' '
+# " "
+# """ """
+
+r1 = 4
+r2 = 1
+# here is not int data
+r3 = r1 / r2
+print(r3)
+print(type(r3))
