@@ -47,5 +47,4 @@ conda remove dep_name
 如果提到Terms of Service的问题，请执行如下命令：
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
-
 ```
