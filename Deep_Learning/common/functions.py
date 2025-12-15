@@ -46,11 +46,14 @@ def mean_squared_error(y, t):
 
 # cross entropy error
 def cross_entropy_error(y, t):
+    print(f"cross_entropy_error: {type(y)}")
+    # 对于一维情况，直接转换为二维
     if y.ndim == 1:
-        y = y.reshape(1, -1)
-        t = t.reshape(1, -1)
-    # t is one-hot code format
-    if y.size == t.size:
+        y = y.reshape(1, y.size)
+        t = t.reshape(1, t.size)
+
+    # t 是独热编码表示，转换为正确类别标签的索引
+    if t.size == y.size:
         t = t.argmax(axis=1)
 
     n = y.shape[0]
