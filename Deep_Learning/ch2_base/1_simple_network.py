@@ -1,13 +1,5 @@
 import numpy as np
-import sys
-import os
-
-from pip._internal import network
-
-sys.path.append(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
-from common.functions import sigmoid, identity
+from Deep_Learning.common.functions import sigmoid, identity
 
 def init_network():
     network = {}

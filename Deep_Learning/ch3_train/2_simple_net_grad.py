@@ -1,11 +1,6 @@
 import numpy as np
-import os
-import sys
-sys.path.append(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
-from common.gradient import numerical_diff
-from common.functions import softmax,cross_entropy_error
+from Deep_Learning.common.gradient import numerical_diff
+from Deep_Learning.common.functions import softmax,cross_entropy_error
 
 class SimpleNet:
     def __init__(self):

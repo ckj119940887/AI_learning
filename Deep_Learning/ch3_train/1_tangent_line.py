@@ -1,11 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import os
-import sys
-sys.path.append(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
-from common.gradient import numerical_diff
+from Deep_Learning.common.gradient import numerical_diff
 
 # f(x) = 0.01x^2 + 0.1x
 def f(x):

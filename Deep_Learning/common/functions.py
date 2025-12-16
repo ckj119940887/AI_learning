@@ -46,7 +46,6 @@ def mean_squared_error(y, t):
 
 # cross entropy error
 def cross_entropy_error(y, t):
-    print(f"cross_entropy_error: {type(y)}")
     # 对于一维情况，直接转换为二维
     if y.ndim == 1:
         y = y.reshape(1, y.size)

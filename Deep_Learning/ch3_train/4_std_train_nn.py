@@ -1,10 +1,6 @@
 import numpy as np
 from two_layer_network import TwoLayerNet
-import os, sys
-sys.path.append(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
-from common.load_data import *
+from Deep_Learning.common.load_data import *
 
 # 加载数据
 x_train, x_test, t_train, t_test = get_data()

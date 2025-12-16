@@ -1,5 +1,7 @@
 import numpy as np
 
+from Deep_Learning.common.functions import softmax, cross_entropy_error
+
 
 class Relu:
     def __init__(self):
@@ -50,3 +52,27 @@ class Affine:
         self.db = np.sum(dout, axis=0)
 
         return dX.reshape(*self.X_original_shape)
+
+class SoftmaxWithLoss:
+    def __init__(self):
+        self.y = None
+        self.t = None
+        self.loss = None
+
+    def forward(self, X, t):
+        self.t = t
+        self.y = softmax(X)
+        self.loss = cross_entropy_error(self.y, self.t)
+
+    def backward(self, dout=1):
+        n = self.t.shape[0]
+        # 标签是独热编码
+        if self.t.size == self.y.size:
+            dx = (self.y - self.t) * dout
+        # 标签不是独热编码, 将预测值对应索引号的元素减1
+        else:
+            dx = self.y.copy()
+            dx[np.arange(n), self.t] -= 1
+
+        return dx / n
+
