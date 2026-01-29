@@ -10,6 +10,9 @@ from sklearn.impute import SimpleImputer # 处理缺失值
 
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
+import matplotlib.pyplot as plt
+
+import os
 
 # 1. read data
 def create_dataset():
@@ -63,5 +66,89 @@ def create_dataset():
 
 # get data
 train_dataset, test_dataset, n_features = create_dataset()
-print(test_dataset)
-print(n_features)
+# print(test_dataset)
+# print(n_features)
+
+# NN model
+model = nn.Sequential(
+    nn.Linear(n_features, 128),
+    nn.BatchNorm1d(128), # batch normalization
+    nn.ReLU(),
+    nn.Dropout(0.2), # dropout
+    nn.Linear(128, 1),
+)
+
+# define loss function
+def log_rmse(y_pred, y_true):
+    mse = nn.MSELoss()
+    y_pred.squeeze_()
+    # 进行范围限制
+    y_pred = torch.clamp(y_pred, 1, float('inf'))
+    return torch.sqrt(mse(torch.log(y_pred), torch.log(y_true)))
+
+# train and test
+def train_test(model, train_dataset, test_dataset, n_epochs, lr, batch_size, device):
+    def init_weights(m):
+        if isinstance(m, nn.Linear):
+            nn.init.xavier_normal_(m.weight)
+
+    # init weight
+    model.apply(init_weights)
+    model.to(device)
+
+    # optim
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+    train_loss_list = []
+    test_loss_list = []
+
+    # train
+    for epoch in range(n_epochs):
+        # train
+        model.train()
+        train_loss_total = 0
+        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        for batch_count, (X, y) in enumerate(train_loader):
+            X, y = X.to(device), y.to(device)
+            y_pred = model(X)
+            loss = log_rmse(y_pred, y)
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+
+            train_loss_total += loss.item()
+
+        # 这是每个batch的平均误差
+        train_loss_avg = train_loss_total / len(train_loader)
+        train_loss_list.append(train_loss_avg)
+
+        # test
+        model.eval()
+
+        test_loss_total = 0
+        test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
+
+        with torch.no_grad():
+            for (X, y) in test_loader:
+                X, y = X.to(device), y.to(device)
+                y_pred = model(X)
+                loss = log_rmse(y_pred, y)
+
+                test_loss_total += loss.item()
+
+        test_loss_avg = test_loss_total / len(test_loader)
+        test_loss_list.append(test_loss_avg)
+
+        print(f"train loss: {train_loss_avg: .6f}, test loss: {test_loss_avg: .6f}")
+
+    return train_loss_list, test_loss_list
+
+print(os.getcwd())
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+train_loss_list, test_loss_list = train_test(model, train_dataset, test_dataset, lr=0.1, n_epochs=100, batch_size=64, device=device)
+
+plt.plot(train_loss_list, 'r-', label='train loss', linewidth=2)
+plt.plot(test_loss_list, 'b--', label='test loss', linewidth=3)
+plt.legend(loc='best')
+plt.show()
